@@ -24,10 +24,10 @@
         name: 'HelloWorld',
 
         data: () => ({
-            rawData:[],
+            rawData:{},
         }),
         methods: {
-            chooseFileDialog: () => {
+            chooseFileDialog: function ()  {
                 const {dialog} = window.require('electron').remote;
 
                 dialog.showOpenDialog({
@@ -43,9 +43,7 @@
                         let workbook = XLSX.readFile(filePath);
                         let first_sheet_name = workbook.SheetNames[0];
                         let worksheet = workbook.Sheets[first_sheet_name];
-                        let jsonArray= XLSX.utils.sheet_to_json(worksheet, {header:["A","B","C","D","year","month","day","hour","wd"]});
-
-                        this.rawData=jsonArray;
+                        this.rawData=XLSX.utils.sheet_to_json(worksheet);
 
                     }
                 }).catch(err => {
