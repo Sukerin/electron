@@ -19,15 +19,15 @@
 </template>
 
 <script>
-    import moment from "moment"
+
     export default {
-        name: 'HelloWorld',
+        name: 'Home',
 
         data: () => ({
-            rawData:{},
+
         }),
         methods: {
-            chooseFileDialog: function ()  {
+            chooseFileDialog: function () {
                 const {dialog} = window.require('electron').remote;
 
                 dialog.showOpenDialog({
@@ -37,30 +37,15 @@
                         ],
                     properties: ['openFile']
                 }).then(result => {
-                    if(!result.canceled){
-                        let filePath=result.filePaths[0];
-                        const XLSX=window.require('xlsx');
-                        let workbook = XLSX.readFile(filePath);
-                        let first_sheet_name = workbook.SheetNames[0];
-                        let worksheet = workbook.Sheets[first_sheet_name];
-                        this.rawData=XLSX.utils.sheet_to_json(worksheet);
-
+                    if (!result.canceled) {
+                        let filePath = result.filePaths[0];
+                        this.$router.push({path:`/charts/${filePath}`})
                     }
                 }).catch(err => {
                     console.log(err)
                 })
             }
         },
-        computed:{
-            sortedData:()=>{
-                for (let value of this.rawData.values()){
-                    let {year,month}=value ;
-                    let date=moment().year(year).month(month)
-                    console.log(date.format('yyyy-MM')) ;
-                    break;
-                }
-            }
 
-        }
     }
 </script>
