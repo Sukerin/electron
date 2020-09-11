@@ -174,7 +174,6 @@
                 let map = new Map();
                 for (let value of rawData.values()) {
                     let {year, month, wd} = value;
-
                     let date = moment().year(year).month(month - 1);
                     let ym = date.format(format);
                     let wind;
