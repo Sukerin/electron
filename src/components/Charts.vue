@@ -39,7 +39,7 @@
     import moment from "moment";
 
     import Wind from "../classes/Wind";
-    import WindDirection from "../classes/WindDirection";
+    import WindDirectionCount from "../classes/WindDirectionCount";
 
     export default {
         name: 'Charts',
@@ -66,7 +66,7 @@
         computed: {
             yearData: function () {
                 let processedData = this.processedData;
-                let windDirection = new WindDirection();
+                let windDirection = new WindDirectionCount();
                 let map = new Map();
                 for (let item of processedData) {
                     let year = item.year;
