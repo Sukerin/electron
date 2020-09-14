@@ -32,34 +32,48 @@
 
             <v-btn text @click="chooseFileDialog">
                 <span class="mr-2">选择文件</span>
-                <v-icon>mdi-open-in-new</v-icon>
+                <v-icon>mdi-folder-open</v-icon>
             </v-btn>
 
         </v-app-bar>
 
         <v-main>
             <v-container fluid>
-                <v-row>
+                <v-row class="mb-4">
                     <v-col>
-                        <v-data-table loading-text="读取数据..." :loading="dataTableLoading"
-                                      :headers="headers"
-                                      :items="tableData"
-                                      :items-per-page="10"
-                                      class="elevation-1"
-                        />
-                    </v-col>
-                </v-row>
-                <!--                <v-row><v-divider></v-divider></v-row>-->
-                <v-row>
-                    <v-col>
-                        <v-card justify="center">
-                            <v-chart :options="chartsData" autoresize style="width: 100%; height: 500px"/>
+                        <v-card class="d-flex align-center justify-center ">
+                            <div :class="['pa-16',{ 'd-none': !btnGroupHide }]">
+                                <span class="text--disabled body-2">暂无数据</span>
+                            </div>
+
+                            <v-chart :options="chartsData" autoresize style="width: 100%;height: 500px"
+                                     :class="{ 'd-none': btnGroupHide }"/>
                         </v-card>
                     </v-col>
                 </v-row>
 
+                <v-row>
+                    <v-col>
+                        <v-card>
+                            <v-data-table loading-text="读取数据..." :loading="dataLoading" fixed-header
+                                          no-data-text="暂无数据"
+                                          :headers="headers"
+                                          :items="tableData"
+                                          :items-per-page="10"
+                            />
+                        </v-card>
+
+                    </v-col>
+                </v-row>
             </v-container>
         </v-main>
+        <v-footer class="d-flex justify-end rounded " app>
+            <v-btn text>
+                <v-icon>mdi-information</v-icon>
+                {{ new Date().getFullYear() }} - 风向玫瑰图
+            </v-btn>
+
+        </v-footer>
     </v-app>
 </template>
 
@@ -98,34 +112,45 @@
                 {text: 'NNW', value: 'windDirectionCount.NNW'},
             ],
             tableData: [],
-            chartsData:{},
+            chartsData: {},
             btnGroupToggle: 0,
             btnGroupHide: true,
-            dataTableLoading: false,
+            dataLoading: false,
 
         }),
         methods: {
             toYear: function () {
-                // this.dataTableLoading=true;
+                this.dataLoading = true;
                 this.chartsData = this.yearEchartsOptions;
                 this.tableData = this.yearData;
-                // this.dataTableLoading=false;
+                this.dataLoading = false;
             },
             toMonth: function () {
-                // this.dataTableLoading=true;
+                this.dataLoading = true;
                 this.chartsData = this.monthEchartsOptions;
                 this.tableData = this.monthData;
-                // this.dataTableLoading=false;
+                this.dataLoading = false;
             },
             toQuarter: function () {
-                // this.dataTableLoading=true;
+                this.dataLoading = true;
                 this.chartsData = this.quarterEchartsOptions;
                 this.tableData = this.quarterData;
-                // this.dataTableLoading=false;
+                this.dataLoading = false;
+            },
+            readFilePromise:function(filePath){
+
+                return new Promise((resolve) => {
+                    const XLSX = window.require('xlsx');
+                    let workbook = XLSX.readFile(filePath);
+                    let first_sheet_name = workbook.SheetNames[0];
+                    let worksheet = workbook.Sheets[first_sheet_name];
+                    this.rawData = XLSX.utils.sheet_to_json(worksheet, {header: ["A", "B", "C", "D", "year", "month", "day", "hour", "wd"]}) ?? [];
+                    if (Object.is(this.rawData.length, 0)) return;
+                    resolve(true);
+                });
             },
             chooseFileDialog: function () {
                 const {dialog} = window.require('electron').remote;
-
                 dialog.showOpenDialog({
                     filters:
                         [
@@ -134,26 +159,27 @@
                     properties: ['openFile']
                 }).then(result => {
                     if (!result.canceled) {
-                        let filePath = result.filePaths[0];
-                        // this.dataTableLoading=true;
-                        this.readData(filePath);
-                        // this.dataTableLoading=false;
+                        return this.readFilePromise(result.filePaths[0]);
                     }
+                }).then(result=>{
+                    if(result===undefined) return;
+                    console.log(result)
+                    this.tableData = this.yearData;
+                    this.chartsData = this.yearEchartsOptions;
+                    this.btnGroupToggle = 0;
+                    this.btnGroupHide = false
                 }).catch(err => {
                     console.log(err)
                 })
             },
             readData: function (filePath) {
+
                 const XLSX = window.require('xlsx');
                 let workbook = XLSX.readFile(filePath);
                 let first_sheet_name = workbook.SheetNames[0];
                 let worksheet = workbook.Sheets[first_sheet_name];
                 this.rawData = XLSX.utils.sheet_to_json(worksheet, {header: ["A", "B", "C", "D", "year", "month", "day", "hour", "wd"]}) ?? [];
-                if (Object.is(this.rawData.length, 0)) return;
-                this.tableData = this.yearData;
-                this.chartsData = this.yearEchartsOptions;
-                this.btnGroupToggle = 0;
-                this.btnGroupHide = false
+
             },
             sortData: function (rawData, type) {
 
@@ -192,7 +218,7 @@
                 }
                 return map;
             },
-            genChartsOption:function (rawData, type) {
+            genChartsOption: function (rawData, type) {
                 let map = this.sortData(rawData, type);
                 let values = Array.from(map.values());
 
@@ -222,10 +248,10 @@
                 }
 
                 return {
-
                     tooltip: {},
                     legend: {
-                        data: legendData
+                        data: legendData,
+                        type: 'scroll',
                     },
                     radar: {
                         // shape: 'circle',
@@ -234,14 +260,14 @@
                                 color: '#fff',
                                 backgroundColor: '#999',
                                 borderRadius: 3,
-                                padding: [3, 5]
+                                padding: [3, 3]
                             }
                         },
                         indicator: indicatorArray
                     },
                     series: [{
                         type: 'radar',
-                        // areaStyle: {normal: {}},
+
                         data: seriesDataArray
                     }]
                 };
