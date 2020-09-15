@@ -1,4 +1,4 @@
-import WindDirectionCount from "./WindDirectionCount";
+import WindDirectionCount from "./windDirectionCount";
 
 export default class Wind{
     windDirectionCount=new WindDirectionCount()

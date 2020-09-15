@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow,Menu } from 'electron'
+import { app, protocol, BrowserWindow,ipcMain,Menu } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
@@ -8,7 +8,7 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
-
+let workerWindow
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
@@ -26,23 +26,42 @@ function createWindow() {
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       // nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION
       nodeIntegration: true,
-      enableRemoteModule: true
+      enableRemoteModule: true,
+      nodeIntegrationInWorker: true
     }
   })
+
+  workerWindow = new BrowserWindow({
+    show: true,
+    webPreferences: { nodeIntegration: true }
+  })
+  workerWindow.on('closed', () => {
+    console.log('background window closed')
+  })
+
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
-    if (!process.env.IS_TEST) win.webContents.openDevTools()
+    workerWindow.loadURL('file://C:\\Users\\Admin\\Project\\sukerin-electron\\public\\worker.html')
+    if (!process.env.IS_TEST) {
+      win.webContents.openDevTools()
+      workerWindow.webContents.openDevTools()
+    }
   } else {
     createProtocol('app')
     // Load the index.html when not in development
     win.loadURL('app://./index.html')
+    workerWindow.loadURL('app://./worker.html')
   }
 
   win.on('closed', () => {
     win = null
   })
+
+
+
+
 }
 
 // Quit when all windows are closed.
@@ -74,8 +93,23 @@ app.on('ready', async () => {
       console.error('Vue Devtools failed to install:', e.toString())
     }
   }
+  ipcMain.on('message-from-worker', (event, arg) => {
+    sendWindowMessage(win, 'message-from-worker', arg)
+  })
+  ipcMain.on('message-from-renderer', (event, arg) => {
+    sendWindowMessage(workerWindow, 'message-from-renderer', arg)
+  })
   createWindow()
 })
+
+function sendWindowMessage(targetWindow, channel, payload) {
+  if (typeof targetWindow === 'undefined') {
+    console.log('Target window does not exist')
+    return
+  }
+  targetWindow.webContents.send(channel, payload)
+}
+
 
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {

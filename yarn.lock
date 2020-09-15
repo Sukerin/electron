@@ -5843,6 +5843,15 @@ loader-utils@^1.0.2, loader-utils@^1.1.0, loader-utils@^1.2.0, loader-utils@^1.2
     emojis-list "^3.0.0"
     json5 "^1.0.1"
 
+loader-utils@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npm.taobao.org/loader-utils/download/loader-utils-2.0.0.tgz#e4cace5b816d425a166b5f097e10cd12b36064b0"
+  integrity sha1-5MrOW4FtQloWa18JfhDNErNgZLA=
+  dependencies:
+    big.js "^5.2.2"
+    emojis-list "^3.0.0"
+    json5 "^2.1.2"
+
 locate-path@^3.0.0:
   version "3.0.0"
   resolved "https://registry.npm.taobao.org/locate-path/download/locate-path-3.0.0.tgz?cache=0&sync_timestamp=1597081904643&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Flocate-path%2Fdownload%2Flocate-path-3.0.0.tgz#dbec3b3ab759758071b58fe59fc41871af21400e"
@@ -9626,6 +9635,14 @@ worker-farm@^1.7.0:
   integrity sha1-JqlMU5G7ypJhUgAvabhKS/dy5ag=
   dependencies:
     errno "~0.1.7"
+
+worker-loader@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.npm.taobao.org/worker-loader/download/worker-loader-3.0.2.tgz?cache=0&sync_timestamp=1598099534734&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fworker-loader%2Fdownload%2Fworker-loader-3.0.2.tgz#f82386a96366d24dbf6c2420f5bed04d3fe5a229"
+  integrity sha1-+COGqWNm0k2/bCQg9b7QTT/loik=
+  dependencies:
+    loader-utils "^2.0.0"
+    schema-utils "^2.7.0"
 
 wrap-ansi@^5.1.0:
   version "5.1.0"

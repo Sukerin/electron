@@ -80,7 +80,7 @@
 <script>
     import moment from "moment";
 
-    import Wind from "./classes/Wind";
+    import Wind from "./libs/wind";
 
     // "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"
     export default {
@@ -137,17 +137,18 @@
                 this.tableData = this.quarterData;
                 this.dataLoading = false;
             },
-            readFilePromise:function(filePath){
-
-                return new Promise((resolve) => {
-                    const XLSX = window.require('xlsx');
-                    let workbook = XLSX.readFile(filePath);
-                    let first_sheet_name = workbook.SheetNames[0];
-                    let worksheet = workbook.Sheets[first_sheet_name];
-                    this.rawData = XLSX.utils.sheet_to_json(worksheet, {header: ["A", "B", "C", "D", "year", "month", "day", "hour", "wd"]}) ?? [];
-                    if (Object.is(this.rawData.length, 0)) return;
-                    resolve(true);
+            readFile:function(filePath){
+                const { ipcRenderer } = window.require('electron');
+                console.log(filePath)
+                ipcRenderer.send('message-from-renderer',filePath );
+                ipcRenderer.on('message-from-worker', (event, arg) => {
+                    this.rawData= arg;
+                    this.tableData = this.yearData;
+                    this.chartsData = this.yearEchartsOptions;
+                    this.btnGroupToggle = 0;
+                    this.btnGroupHide = false
                 });
+
             },
             chooseFileDialog: function () {
                 const {dialog} = window.require('electron').remote;
@@ -159,30 +160,14 @@
                     properties: ['openFile']
                 }).then(result => {
                     if (!result.canceled) {
-                        return this.readFilePromise(result.filePaths[0]);
+                        return this.readFile(result.filePaths[0]);
                     }
-                }).then(result=>{
-                    if(result===undefined) return;
-                    console.log(result)
-                    this.tableData = this.yearData;
-                    this.chartsData = this.yearEchartsOptions;
-                    this.btnGroupToggle = 0;
-                    this.btnGroupHide = false
                 }).catch(err => {
                     console.log(err)
                 })
             },
-            readData: function (filePath) {
 
-                const XLSX = window.require('xlsx');
-                let workbook = XLSX.readFile(filePath);
-                let first_sheet_name = workbook.SheetNames[0];
-                let worksheet = workbook.Sheets[first_sheet_name];
-                this.rawData = XLSX.utils.sheet_to_json(worksheet, {header: ["A", "B", "C", "D", "year", "month", "day", "hour", "wd"]}) ?? [];
-
-            },
             sortData: function (rawData, type) {
-
                 let format;
                 switch (type) {
                     case 'year':
