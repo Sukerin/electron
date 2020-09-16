@@ -7,9 +7,14 @@ module.exports = {
     pluginOptions: {
         electronBuilder: {
             externals: ['xlsx'],
-            builderOptions: {
-                asar: false,
-            }
+            // builderOptions: {
+            //     asar: false,
+            // }
         }
     },
+    configureWebpack:{
+        entry:'./src/main.js',
+        target:'electron-renderer',
+    },
+
 }

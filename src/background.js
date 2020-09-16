@@ -1,8 +1,10 @@
 'use strict'
 
-import { app, protocol, BrowserWindow,ipcMain,Menu } from 'electron'
+import { app, protocol, BrowserWindow,Session,ipcMain,Menu } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
+import createWorkerWindow from "./windows/workerWindow";
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+import path from "path";
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -31,36 +33,25 @@ function createWindow() {
     }
   })
 
-  workerWindow = new BrowserWindow({
-    show: true,
-    webPreferences: { nodeIntegration: true }
-  })
-  workerWindow.on('closed', () => {
-    console.log('background window closed')
-  })
 
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
-    workerWindow.loadURL('file://C:\\Users\\Admin\\Project\\sukerin-electron\\public\\worker.html')
     if (!process.env.IS_TEST) {
       win.webContents.openDevTools()
-      workerWindow.webContents.openDevTools()
     }
   } else {
     createProtocol('app')
     // Load the index.html when not in development
     win.loadURL('app://./index.html')
-    workerWindow.loadURL('app://./worker.html')
   }
 
   win.on('closed', () => {
     win = null
   })
 
-
-
+  workerWindow=createWorkerWindow (BrowserWindow)
 
 }
 
@@ -86,9 +77,16 @@ app.on('activate', () => {
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
   if (isDevelopment && !process.env.IS_TEST) {
+
     // Install Vue Devtools
     try {
-      // await installExtension(VUEJS_DEVTOOLS)
+      // 安装vue-devtools
+      // let extensions = Session.defaultSession.getAllExtensions()
+      // console.log(111)
+      // if ( !extensions[ 'Vue.js devtools' ] ) {
+      //   console.log(122)
+      //   await Session.defaultSession.loadExtension('./vue-devtools')
+      // }
     } catch (e) {
       console.error('Vue Devtools failed to install:', e.toString())
     }

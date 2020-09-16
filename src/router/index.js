@@ -1,22 +1,27 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-// import Home from '../components/Home'
-// import Charts from '../components/Charts'
+import Worker from '../components/Worker'
+import Home from '../components/Home'
+
 
 Vue.use(Router)
 
 export default new Router({
-    // routes: [{
-    //     path: '/',
-    //     redirect: '/home',//设置默认指向的路径
-    // }, {
-    //     path: '/home',
-    //     component: Home,
-    // }, {
-    //     path: '/charts/:filePath',
-    //     component: Charts,
-    //     props: true
-    // }
+    routes: [
+        {
+            path: '/',
+            redirect: '/home',//设置默认指向的路径
+        },
+        {
+            name: 'worker',
+            path: '/worker',
+            component: Worker,
+        },
+        {
+            name: 'home',
+            path: '/home',
+            component: Home,
+        }
 
-    // ]
+    ]
 })
