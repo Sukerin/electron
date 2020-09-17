@@ -1,6 +1,11 @@
 {
-  "name": "sukerin-electron",
-  "version": "0.1.0",
+  "name": "wind-rose",
+  "description": "风向玫瑰图供武汉市气象局使用",
+  "version": "1.0.0",
+  "author": {
+    "email": "sukerki@163.com",
+    "name": "sukerin"
+  },
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",

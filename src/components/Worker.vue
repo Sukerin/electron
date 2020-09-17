@@ -6,6 +6,8 @@
 <script>
     import moment from 'moment';
     import Wind from '../libs/wind';
+    import echarts from 'echarts'
+
 
     const {ipcRenderer} = require('electron')
 
@@ -19,39 +21,34 @@
     let response={
         table:null,
         charts:null,
-        type:null
+        type:null,
+        isSuccess:true,
+        error:null
     }
     ipcRenderer.on('message-from-renderer', (event, mainArgs) => {
 
-        if(mainArgs.fucType==='read'){
+        try {
             console.log(mainArgs)
-            let {filePath} =mainArgs;
-            readFile(filePath);
-            response.type='read';
-            ipcRenderer.send('message-from-worker', response);
+            if(mainArgs.fucType==='read'){
+                let {filePath} =mainArgs;
+                readFile(filePath);
+                response.type='read';
+            }
+            if(mainArgs.fucType==='sort'){
+                let {sortType} =mainArgs;
+                let sortedData = sortData(rawData,sortType);
+                response.table=Array.from(sortedData.values());
+                response.charts=genChartsOption(sortedData);
+                response.type='sort';
+            }
+            response.isSuccess=true;
+        }catch (e) {
+            response.error=e;
+            response.isSuccess=false;
         }
 
-        if(mainArgs.fucType==='sort'){
-            let {sortType} =mainArgs;
-            let sortedData = sortData(rawData,sortType);
-
-            response.table=Array.from(sortedData.values());
-            response.charts=genChartsOption(sortedData);
-            response.type='sort';
-            ipcRenderer.send('message-from-worker', response);
-        }
+        ipcRenderer.send('message-from-worker', response);
     })
-
-    // function readAndSort(mainArgs) {
-    //     let {filePath,sortType} =mainArgs;
-    //     readFile(filePath);
-    //     let sortedData = sortData(rawData,sortType);
-    //     let data={};
-    //     data.table=Array.from(sortedData.values());
-    //     data.charts=genChartsOption(sortedData);
-    //
-    //     ipcRenderer.send('message-from-worker', data);
-    // }
 
     function readFile(filePath) {
         const XLSX = require('xlsx');
@@ -72,7 +69,7 @@
                 format = 'yyyy-第Q季度';
                 break;
             case 'month':
-                format = 'yyyy-MM';
+                format = 'yyyy-MM月';
                 break;
             default :
                 format = 'yyyy'
@@ -110,8 +107,9 @@
             let itemData = {};
             itemData.name = data.sDateTime;
             itemData.value = [];
+            itemData.symbolSize=3;
             for (let wdName of Object.keys(data.windDirectionCount)) {
-                itemData.value.push(data.windDirectionCount[wdName])
+                  itemData.value.push(data.windDirectionCount[wdName])
             }
             let currentMax = Math.max.apply(null, itemData.value);
             if (max < currentMax) {
@@ -144,6 +142,44 @@
                         padding: [3, 3]
                     }
                 },
+              splitNumber: 100,
+
+              splitLine: {
+                lineStyle: {
+                  width: 1,
+                  color: '#ffffff',
+                }
+              },
+              axisLine: {
+                lineStyle: {
+                  width: 3,
+                  color: '#ffffff',
+                }
+              },
+              splitArea: {
+                areaStyle: {
+                  color: [
+                    new echarts.graphic.LinearGradient(0, 0, 1, 0,
+                        [{
+                          offset: 0,
+                          color: '#ed7d31'
+                        }, {
+                          offset: 1,
+                          color: '#ffffff'
+                        }],
+                        false),
+                    new echarts.graphic.LinearGradient(0, 0, 1, 0,
+                        [{
+                          offset: 0,
+                          color: '#ffffff'
+                        }, {
+                          offset: 1,
+                          color: '#2f2f2f'
+                        }],
+                        false),
+                  ]
+                },
+              },
                 indicator: indicatorArray
             },
             series: [{
