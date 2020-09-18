@@ -7,8 +7,8 @@
     >
       <div class="d-flex align-center">
 
-        <v-btn-toggle :class="{ 'd-none': btnGroupHide }" v-model="btnGroupToggle" color="white" group>
-          <v-btn @click="toYear" id="yearBtn">
+        <v-btn-toggle v-model="btnGroupToggle" color="white" group>
+          <v-btn @click="toYear">
             <span>年</span>
             <v-icon right>mdi-format-align-left</v-icon>
           </v-btn>
@@ -39,14 +39,14 @@
 
     <v-main style="background-color: #f1f1f1">
 
-      <v-container fluid >
-        <v-overlay
-            absolute
-            opacity=0.3
-            :value="dataLoading"
-        >
-          <v-progress-circular indeterminate color="primary"></v-progress-circular>
-        </v-overlay>
+      <v-container fluid>
+        <!--        <v-overlay-->
+        <!--            absolute-->
+        <!--            opacity=0.3-->
+        <!--            :value="dataLoading"-->
+        <!--        >-->
+        <!--          <v-progress-circular indeterminate color="primary"></v-progress-circular>-->
+        <!--        </v-overlay>-->
         <v-alert
             dense
             v-model="alert"
@@ -60,9 +60,9 @@
         <v-row class="mb-4">
           <v-col>
             <v-card>
-              <p :class="['body-2', 'pa-16' ,'text-center', 'text--disabled',{ 'd-none': !btnGroupHide }]">暂无数据</p>
-              <v-chart :options="chartsData" autoresize style="width: 100%;height: 500px"
-                       :class="{ 'd-none': btnGroupHide }"/>
+              <v-chart :options="chartsData"  autoresize style="width: 100%;height: 500px"
+                       @legendselectchanged="handleLegendSelectChanged"
+                       ref="vechart"/>
             </v-card>
           </v-col>
         </v-row>
@@ -71,6 +71,7 @@
           <v-col>
             <v-card>
               <v-data-table loading-text="读取数据..." fixed-header :footer-props="{itemsPerPageText: '每页数量'}"
+                            :loading="dataLoading"
                             no-data-text="暂无数据"
                             :headers="headers"
                             :items="tableData"
@@ -103,7 +104,7 @@
           max-width="290"
       >
         <v-card>
-          <v-card-title class="headline">异常详情</v-card-title>
+          <v-card-title>异常详情</v-card-title>
           <v-card-text>
             {{ errorDetails }}
           </v-card-text>
@@ -115,6 +116,8 @@
 </template>
 
 <script>
+import echarts from "echarts";
+import Wind from "@/libs/wind";
 
 
 const {ipcRenderer} = require('electron');
@@ -148,9 +151,69 @@ export default {
       {text: 'NNW', value: 'windDirectionCount.NNW'},
     ],
     tableData: [],
-    chartsData: {},
+    chartsData: {
+      legend: {
+        data: [],
+        type: 'scroll',
+      },
+      radar: {
+        // shape: 'circle',
+        name: {
+          textStyle: {
+            color: '#fff',
+            backgroundColor: '#999',
+            borderRadius: 3,
+            padding: [3, 3]
+          }
+        },
+        splitNumber: 100,
+
+        splitLine: {
+          lineStyle: {
+            width: 1,
+            color: '#ffffff',
+          }
+        },
+        axisLine: {
+          lineStyle: {
+            width: 3,
+            color: '#ffffff',
+          }
+        },
+        splitArea: {
+          areaStyle: {
+            color: [
+              new echarts.graphic.LinearGradient(0, 0, 1, 0,
+                  [{
+                    offset: 0,
+                    color: '#ed7d31'
+                  }, {
+                    offset: 1,
+                    color: '#ffffff'
+                  }],
+                  false),
+              new echarts.graphic.LinearGradient(0, 0, 1, 0,
+                  [{
+                    offset: 0,
+                    color: '#ffffff'
+                  }, {
+                    offset: 1,
+                    color: '#2f2f2f'
+                  }],
+                  false),
+            ]
+          },
+        },
+        indicator: [],
+
+      },
+      series: [{
+        type: 'radar',
+        data: []
+      }]
+    },
+
     btnGroupToggle: 0,
-    btnGroupHide: true,
     dataLoading: false,
     mainArgs: {
       filePath: null,
@@ -158,10 +221,34 @@ export default {
       fucType: null,
     },
     alert: false,
-    errorDetails: "",
+    errorDetails: "暂无",
     errorDetailsDialog: false,
   }),
   methods: {
+    //计算雷达图最大值
+    handleLegendSelectChanged: function (e) {
+      let selected = e.selected;
+      let max = 0;
+      for (let prop of Object.keys(selected)) {
+        if (selected[prop] === false) continue;
+
+        let dataArray = this.chartsData.series[0].data
+        for (let data of dataArray) {
+          if (data.name === prop) {
+            let valueArray = data.value;
+            let currentMax = Math.max.apply(null, valueArray);
+            if (currentMax > max) {
+              max = currentMax;
+            }
+          }
+        }
+
+        let indicatorArray = this.chartsData.radar.indicator;
+        for (let indicator of indicatorArray) {
+          indicator.max = max;
+        }
+      }
+    },
     toYear: function () {
 
       this.dataLoading = true;
@@ -207,9 +294,28 @@ export default {
       })
     },
   },
+  watch: {
+    dataLoading: function (val) {
+      if (val) {
+        this.$refs.vechart.showLoading()
+      } else {
+        this.$refs.vechart.hideLoading()
+      }
+    }
+  },
   created() {
+    {
+      let indicatorArray=[];
+      for (let wdName of Object.keys(new Wind().windDirectionCount)) {
+        let indicatorItem = {};
+        indicatorItem.name = wdName;
+        indicatorArray.push(indicatorItem);
+      }
+      this.chartsData.radar.indicator=indicatorArray;
+    }
+
+    ipcRenderer.removeAllListeners("message-from-worker");
     ipcRenderer.on('message-from-worker', (event, arg) => {
-      console.log(arg)
       if (arg.isSuccess) {
         if (arg.type === 'read') {
           this.mainArgs.sortType = 'year';
@@ -218,9 +324,10 @@ export default {
           ipcRenderer.send('message-from-renderer', this.mainArgs);
         }
         if (arg.type === 'sort') {
-          this.btnGroupHide = false
           this.tableData = arg.table;
-          this.chartsData = arg.charts
+          this.chartsData.legend.data=arg.charts.legendData
+          this.chartsData.radar.indicator=arg.charts.indicator
+          this.chartsData.series[0].data=arg.charts.seriesData
         }
         this.alert = false;
       } else {

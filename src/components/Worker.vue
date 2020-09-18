@@ -4,12 +4,11 @@
     </div>
 </template>
 <script>
-    import moment from 'moment';
-    import Wind from '../libs/wind';
-    import echarts from 'echarts'
+import moment from 'moment';
+import Wind from '../libs/wind';
 
 
-    const {ipcRenderer} = require('electron')
+const {ipcRenderer} = require('electron')
 
     export default {
         name: 'Worker',
@@ -100,7 +99,7 @@
         let map = sortedData;
         let values = Array.from(map.values());
 
-        let legendData = Array.from(map.keys());
+        let legendArray = Array.from(map.keys());
         let seriesDataArray = [];
         let max = 0;
         for (let data of values) {
@@ -126,70 +125,11 @@
             indicatorArray.push(indicatorItem);
         }
 
-        let json= {
-            tooltip: {},
-            legend: {
-                data: legendData,
-                type: 'scroll',
-            },
-            radar: {
-                // shape: 'circle',
-                name: {
-                    textStyle: {
-                        color: '#fff',
-                        backgroundColor: '#999',
-                        borderRadius: 3,
-                        padding: [3, 3]
-                    }
-                },
-              splitNumber: 100,
-
-              splitLine: {
-                lineStyle: {
-                  width: 1,
-                  color: '#ffffff',
-                }
-              },
-              axisLine: {
-                lineStyle: {
-                  width: 3,
-                  color: '#ffffff',
-                }
-              },
-              splitArea: {
-                areaStyle: {
-                  color: [
-                    new echarts.graphic.LinearGradient(0, 0, 1, 0,
-                        [{
-                          offset: 0,
-                          color: '#ed7d31'
-                        }, {
-                          offset: 1,
-                          color: '#ffffff'
-                        }],
-                        false),
-                    new echarts.graphic.LinearGradient(0, 0, 1, 0,
-                        [{
-                          offset: 0,
-                          color: '#ffffff'
-                        }, {
-                          offset: 1,
-                          color: '#2f2f2f'
-                        }],
-                        false),
-                  ]
-                },
-              },
-                indicator: indicatorArray
-            },
-            series: [{
-                type: 'radar',
-
-                data: seriesDataArray
-            }]
+       return {
+         legendData: legendArray,
+         indicator: indicatorArray,
+         seriesData: seriesDataArray,
         };
-         console.log(json)
-        return json;
     }
 
 </script>
