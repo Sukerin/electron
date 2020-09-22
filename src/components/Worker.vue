@@ -1,7 +1,5 @@
-<template>
-    <div>
-
-    </div>
+<template functional>
+  <div></div>
 </template>
 <script>
 import moment from 'moment';
@@ -12,9 +10,9 @@ const {ipcRenderer} = require('electron')
 
     export default {
         name: 'Worker',
-        data:() => ({
+        data:() => {
 
-        }),
+        },
     }
     let rawData=[];
     let response={
@@ -27,7 +25,6 @@ const {ipcRenderer} = require('electron')
     ipcRenderer.on('message-from-renderer', (event, mainArgs) => {
 
         try {
-            console.log(mainArgs)
             if(mainArgs.fucType==='read'){
                 let {filePath} =mainArgs;
                 readFile(filePath);

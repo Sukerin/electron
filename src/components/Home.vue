@@ -40,13 +40,6 @@
     <v-main style="background-color: #f1f1f1">
 
       <v-container fluid>
-        <!--        <v-overlay-->
-        <!--            absolute-->
-        <!--            opacity=0.3-->
-        <!--            :value="dataLoading"-->
-        <!--        >-->
-        <!--          <v-progress-circular indeterminate color="primary"></v-progress-circular>-->
-        <!--        </v-overlay>-->
         <v-alert
             dense
             v-model="alert"
