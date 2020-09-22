@@ -4,7 +4,7 @@
 <script>
 import moment from 'moment';
 import Wind from '../libs/wind';
-
+import XLSX from 'xlsx';
 
 const {ipcRenderer} = require('electron')
 
@@ -47,7 +47,6 @@ const {ipcRenderer} = require('electron')
     })
 
     function readFile(filePath) {
-        const XLSX = require('xlsx');
 
         let workbook = XLSX.readFile(filePath);
         let first_sheet_name = workbook.SheetNames[0];
