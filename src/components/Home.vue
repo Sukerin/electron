@@ -151,6 +151,7 @@ export default {
     ],
     tableData: [],
     chartsData: {
+      tooltip:{},
       legend: {
         data: [],
         type: 'scroll',
