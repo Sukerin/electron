@@ -53,7 +53,7 @@
         <v-row class="mb-4">
           <v-col>
             <v-card>
-              <v-chart :options="chartsData"  autoresize style="width: 100%;height: 500px"
+              <v-chart :options="chartsData" autoresize style="width: 100%;height: 500px"
                        @legendselectchanged="handleLegendSelectChanged"
                        ref="vechart"/>
             </v-card>
@@ -88,7 +88,15 @@
             {{ new Date().getFullYear() }} - 风向玫瑰图
           </v-btn>
         </template>
-        <span>软件作者：汪健健（武汉市气象局）、董睿</span>
+        <span>软件作者：
+          <br>
+          <v-avatar size="25"><img
+              :src="require('@/assets/toad.jpg')"
+              alt="WJJ"></v-avatar>  汪健健（武汉市气象局）
+          <br>
+          <v-avatar size="25"><img
+              :src="require('@/assets/jay.jpg')"
+              alt="DR"></v-avatar>  董睿（武汉天融信创新科技有限公司）</span>
       </v-tooltip>
 
 
@@ -120,8 +128,6 @@ export default {
   data: () => ({
     rawData: [],
     headers: [
-//                {text: '年', align: 'start', sortable: false, value: 'year'},
-//                {text: '月', value: 'month'},
       {text: '日期', value: 'sDateTime'},
       {text: 'N', value: 'windDirectionCount.N'},
       {text: 'NNE', value: 'windDirectionCount.NNE'},
@@ -150,7 +156,7 @@ export default {
         type: 'scroll',
       },
       radar: {
-        // shape: 'circle',
+
         name: {
           textStyle: {
             color: '#fff',
@@ -169,7 +175,7 @@ export default {
         },
         axisLine: {
           lineStyle: {
-            width: 3,
+            width: 2,
             color: '#ffffff',
           }
         },
@@ -179,19 +185,19 @@ export default {
               new echarts.graphic.LinearGradient(0, 0, 1, 0,
                   [{
                     offset: 0,
-                    color: '#ed7d31'
+                    color: '#c6ffdd'
                   }, {
                     offset: 1,
-                    color: '#ffffff'
+                    color: '#fbd786'
                   }],
                   false),
               new echarts.graphic.LinearGradient(0, 0, 1, 0,
                   [{
                     offset: 0,
-                    color: '#ffffff'
+                    color: '#fbd786'
                   }, {
                     offset: 1,
-                    color: '#2f2f2f'
+                    color: '#f7797d'
                   }],
                   false),
             ]
@@ -298,13 +304,13 @@ export default {
   },
   created() {
     {
-      let indicatorArray=[];
+      let indicatorArray = [];
       for (let wdName of Object.keys(new Wind().windDirectionCount)) {
         let indicatorItem = {};
         indicatorItem.name = wdName;
         indicatorArray.push(indicatorItem);
       }
-      this.chartsData.radar.indicator=indicatorArray;
+      this.chartsData.radar.indicator = indicatorArray;
     }
 
     ipcRenderer.removeAllListeners("message-from-worker");
@@ -318,9 +324,9 @@ export default {
         }
         if (arg.type === 'sort') {
           this.tableData = arg.table;
-          this.chartsData.legend.data=arg.charts.legendData
-          this.chartsData.radar.indicator=arg.charts.indicator
-          this.chartsData.series[0].data=arg.charts.seriesData
+          this.chartsData.legend.data = arg.charts.legendData
+          this.chartsData.radar.indicator = arg.charts.indicator
+          this.chartsData.series[0].data = arg.charts.seriesData
         }
         this.alert = false;
       } else {
