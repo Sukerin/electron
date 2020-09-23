@@ -1,3 +1,5 @@
+const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
+
 module.exports = {
     transpileDependencies: [
         'resize-detector',
@@ -48,6 +50,9 @@ module.exports = {
     configureWebpack: {
         entry: './src/main.js',
         target: 'electron-renderer',
+        plugins: [
+            new MomentLocalesPlugin(),
+        ]
 
     },
 

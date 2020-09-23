@@ -5872,6 +5872,11 @@ lodash.defaultsdeep@^4.6.1:
   resolved "https://registry.npm.taobao.org/lodash.defaultsdeep/download/lodash.defaultsdeep-4.6.1.tgz#512e9bd721d272d94e3d3a63653fa17516741ca6"
   integrity sha1-US6b1yHSctlOPTpjZT+hdRZ0HKY=
 
+lodash.difference@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.npm.taobao.org/lodash.difference/download/lodash.difference-4.5.0.tgz#9ccb4e505d486b91651345772885a2df27fd017c"
+  integrity sha1-nMtOUF1Ia5FlE0V3KIWi3yf9AXw=
+
 lodash.kebabcase@^4.1.1:
   version "4.1.1"
   resolved "https://registry.npm.taobao.org/lodash.kebabcase/download/lodash.kebabcase-4.1.1.tgz#8489b1cb0d29ff88195cceca448ff6d6cc295c36"
@@ -6231,6 +6236,13 @@ mkdirp@^1.0.3, mkdirp@^1.0.4:
   version "1.0.4"
   resolved "https://registry.npm.taobao.org/mkdirp/download/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
   integrity sha1-PrXtYmInVteaXw4qIh3+utdcL34=
+
+moment-locales-webpack-plugin@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.npm.taobao.org/moment-locales-webpack-plugin/download/moment-locales-webpack-plugin-1.2.0.tgz#9af83876a44053706b868ceece5119584d10d7aa"
+  integrity sha1-mvg4dqRAU3BrhozuzlEZWE0Q16o=
+  dependencies:
+    lodash.difference "^4.5.0"
 
 moment@^2.27.0:
   version "2.27.0"

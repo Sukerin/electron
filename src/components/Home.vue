@@ -92,7 +92,7 @@
           <br>
           <v-avatar size="25"><img
               :src="require('@/assets/toad.jpg')"
-              alt="WJJ"></v-avatar>  汪健健（武汉市气象局）
+              alt="WJJ"></v-avatar>  汪健健（武汉市公共气象服务中心）
           <br>
           <v-avatar size="25"><img
               :src="require('@/assets/jay.jpg')"
@@ -117,7 +117,16 @@
 </template>
 
 <script>
-import echarts from "echarts";
+
+// 引入 ECharts 主模块
+import echarts from 'echarts/lib/echarts';
+import 'echarts/lib/chart/radar'
+import 'echarts/lib/component/tooltip'
+import 'echarts/lib/component/legend'
+import 'echarts/lib/component/radar'
+import 'echarts/lib/component/legendScroll'
+
+
 import Wind from "@/libs/wind";
 
 
