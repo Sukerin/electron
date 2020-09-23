@@ -7,7 +7,7 @@
     >
       <div class="d-flex align-center">
 
-        <v-btn-toggle v-model="btnGroupToggle" color="white" group>
+        <v-btn-toggle mandatory shaped v-model="btnGroupToggle" color="white" group >
           <v-btn @click="toYear">
             <span>年</span>
             <v-icon right>mdi-format-align-left</v-icon>
@@ -77,11 +77,15 @@
       </v-container>
     </v-main>
     <v-footer class="d-flex justify-space-between " app color="primary">
-      <v-btn icon color="white" @click.stop=" errorDetailsDialog = true">
-        <v-icon>mdi-bug</v-icon>
-      </v-btn>
 
-      <v-tooltip top>
+<!--        <v-btn icon color="white" @click.stop=" errorDetailsDialog = true">-->
+<!--          <v-icon>mdi-bug</v-icon>-->
+<!--        </v-btn>-->
+        <v-btn icon color="white" @click.stop=" errorDetailsDialog = true">
+          <v-icon>mdi-cog</v-icon>
+        </v-btn>
+
+      <v-tooltip v-once top>
         <template v-slot:activator="{ on, attrs }">
           <v-btn text v-bind="attrs" v-on="on" color="white">
             <v-icon>mdi-copyright</v-icon>
