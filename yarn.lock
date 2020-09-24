@@ -9273,6 +9273,11 @@ vary@~1.1.2:
   resolved "https://registry.npm.taobao.org/vary/download/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha1-IpnwLG3tMNSllhsLn3RSShj2NPw=
 
+vee-validate@^3.4.0:
+  version "3.4.0"
+  resolved "https://registry.npm.taobao.org/vee-validate/download/vee-validate-3.4.0.tgz?cache=0&sync_timestamp=1600736393464&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fvee-validate%2Fdownload%2Fvee-validate-3.4.0.tgz#dcdefcd45d43823c8b26aceee55f067ef56ca800"
+  integrity sha1-3N781F1DgjyLJqzu5V8GfvVsqAA=
+
 vendors@^1.0.0:
   version "1.0.4"
   resolved "https://registry.npm.taobao.org/vendors/download/vendors-1.0.4.tgz#e2b800a53e7a29b93506c3cf41100d16c4c4ad8e"
@@ -9404,6 +9409,11 @@ vue@^2.6.11:
   version "2.6.12"
   resolved "https://registry.npm.taobao.org/vue/download/vue-2.6.12.tgz#f5ebd4fa6bd2869403e29a896aed4904456c9123"
   integrity sha1-9evU+mvShpQD4pqJau1JBEVskSM=
+
+vuelidate@^0.7.5:
+  version "0.7.5"
+  resolved "https://registry.npm.taobao.org/vuelidate/download/vuelidate-0.7.5.tgz#ff48c75ae9d24ea24c24e9ea08065eda0a0cba0a"
+  integrity sha1-/0jHWunSTqJMJOnqCAZe2goMugo=
 
 vuetify-loader@^1.3.0:
   version "1.6.0"

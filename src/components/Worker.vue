@@ -26,8 +26,8 @@ const {ipcRenderer} = require('electron')
 
         try {
             if(mainArgs.fucType==='read'){
-                let {filePath} =mainArgs;
-                readFile(filePath);
+                let {filePath,excelOptions} =mainArgs;
+                readFile(filePath,excelOptions);
                 response.type='read';
             }
             if(mainArgs.fucType==='sort'){
@@ -46,12 +46,24 @@ const {ipcRenderer} = require('electron')
         ipcRenderer.send('message-from-worker', response);
     })
 
-    function readFile(filePath) {
+    function readFile(filePath,excelOptions) {
 
         let workbook = XLSX.readFile(filePath);
         let first_sheet_name = workbook.SheetNames[0];
         let worksheet = workbook.Sheets[first_sheet_name];
-        return rawData = XLSX.utils.sheet_to_json(worksheet, {header: ["A", "B", "C", "D", "year", "month", "day", "hour", "wd"]}) ?? [];
+
+        let colMax=0;
+        for(let value of Object.values(excelOptions)){
+          let currentMax = value;
+          if(colMax<currentMax) colMax=currentMax;
+        }
+        let headerArray=new Array(colMax).fill('dr');
+
+        for(let [key, value] of Object.entries(excelOptions)){
+          headerArray[value]=key;
+        }
+
+        return rawData = XLSX.utils.sheet_to_json(worksheet, {header: headerArray}) ?? [];
     }
 
     function sortData(rawData, type) {

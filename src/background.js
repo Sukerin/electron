@@ -80,6 +80,20 @@ app.on('activate', () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
+
+  let excelOptionsPath=process.cwd()+'/config.json'
+  const fs=require('fs')
+  let excelOptions= {
+    year: 4,
+    month: 5,
+    day: 6,
+    hour: 7,
+    wd: 8,
+  };
+  if(!fs.existsSync(excelOptionsPath)){
+    fs.writeFileSync(excelOptionsPath,JSON.stringify(excelOptions))
+  }
+
   if (isDevelopment && !process.env.IS_TEST) {
 
     // Install Vue Devtools
