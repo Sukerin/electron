@@ -3,8 +3,8 @@
 import { app, protocol, BrowserWindow,Session,ipcMain,Menu } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import createWorkerWindow from "./windows/workerWindow";
-import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
-import path from "path";
+// import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+// import path from "path";
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -81,18 +81,6 @@ app.on('activate', () => {
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
 
-  let excelOptionsPath=process.cwd()+'/config.json'
-  const fs=require('fs')
-  let excelOptions= {
-    year: 4,
-    month: 5,
-    day: 6,
-    hour: 7,
-    wd: 8,
-  };
-  if(!fs.existsSync(excelOptionsPath)){
-    fs.writeFileSync(excelOptionsPath,JSON.stringify(excelOptions))
-  }
 
   if (isDevelopment && !process.env.IS_TEST) {
 

@@ -131,82 +131,122 @@
       </v-tooltip>
 
 
-      <v-dialog
-          v-model="errorDetailsDialog.show"
-          max-width="290"
-      >
-        <v-card>
-          <v-card-title>异常详情</v-card-title>
-          <v-card-text>
-            {{ errorDetailsDialog.text }}
-          </v-card-text>
-        </v-card>
-      </v-dialog>
-      <v-dialog
-          v-model="excelOptionsDialog.show"
-          max-width="290"
-      >
-        <v-card shaped>
-          <v-card-title>
-            Excel选项
-          </v-card-title>
-          <v-card-text>
-            <ValidationObserver v-slot="{ invalid }">
-              <form>
-                <ValidationProvider v-slot="{ errors }" name="风向列号码" rules="required|max_value:100|integer">
-                  <v-text-field
-                      v-model="excelOptions.wd"
-                      :error-messages="errors"
-                      label="风向"
-                      required
-                  ></v-text-field>
-                </ValidationProvider>
-                <ValidationProvider v-slot="{ errors }" name="年列号码" rules="required|max_value:100|integer">
-                  <v-text-field
-                      v-model="excelOptions.year"
-                      :error-messages="errors"
-                      label="年"
-                      required
-                  ></v-text-field>
-                </ValidationProvider>
-                <ValidationProvider v-slot="{ errors }" name="月列号码" rules="required|max_value:100|integer">
-                  <v-text-field
-                      v-model="excelOptions.month"
-                      :error-messages="errors"
-                      label="月"
-                      required
-
-                  ></v-text-field>
-                </ValidationProvider>
-                <ValidationProvider v-slot="{ errors }" name="日列号码" rules="required|max_value:100|integer">
-                  <v-text-field
-                      v-model="excelOptions.day"
-                      :error-messages="errors"
-                      label="日"
-                      required
-
-                  ></v-text-field>
-                </ValidationProvider>
-                <ValidationProvider v-slot="{ errors }" name="小时列号码" rules="required|max_value:100|integer">
-                  <v-text-field
-                      v-model="excelOptions.hour"
-                      :error-messages="errors"
-                      label="小时"
-                      required
-
-                  ></v-text-field>
-                </ValidationProvider>
-                <v-btn color="warning" block :disabled="invalid" @click="excelOptionsSubmit">更新</v-btn>
-              </form>
-            </ValidationObserver>
-          </v-card-text>
-<!--          <v-card-actions class="d-flex justify-center">-->
-<!--           -->
-<!--          </v-card-actions>-->
-        </v-card>
-      </v-dialog>
 
     </v-footer>
+    <v-dialog
+        v-model="errorDetailsDialog.show"
+        max-width="290"
+    >
+      <v-card shaped>
+        <v-card-title>异常详情</v-card-title>
+        <v-card-text>
+          {{ errorDetailsDialog.text }}
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog
+        v-model="excelOptionsDialog.show"
+        max-width="290"
+    >
+      <v-card shaped>
+        <v-card-title>
+          Excel选项
+        </v-card-title>
+        <v-card-text>
+          <ValidationObserver v-slot="{ invalid }">
+            <form>
+              <ValidationProvider v-slot="{ errors }" name="风向列号码" rules="required|max_value:100|integer">
+                <v-text-field
+                    v-model="excelOptions.wd"
+                    :error-messages="errors"
+                    label="风向"
+                    required
+                ></v-text-field>
+              </ValidationProvider>
+              <ValidationProvider v-slot="{ errors }" name="年列号码" rules="required|max_value:100|integer">
+                <v-text-field
+                    v-model="excelOptions.year"
+                    :error-messages="errors"
+                    label="年"
+                    required
+                ></v-text-field>
+              </ValidationProvider>
+              <ValidationProvider v-slot="{ errors }" name="月列号码" rules="required|max_value:100|integer">
+                <v-text-field
+                    v-model="excelOptions.month"
+                    :error-messages="errors"
+                    label="月"
+                    required
+
+                ></v-text-field>
+              </ValidationProvider>
+              <ValidationProvider v-slot="{ errors }" name="日列号码" rules="required|max_value:100|integer">
+                <v-text-field
+                    v-model="excelOptions.day"
+                    :error-messages="errors"
+                    label="日"
+                    required
+
+                ></v-text-field>
+              </ValidationProvider>
+              <ValidationProvider v-slot="{ errors }" name="小时列号码" rules="required|max_value:100|integer">
+                <v-text-field
+                    v-model="excelOptions.hour"
+                    :error-messages="errors"
+                    label="小时"
+                    required
+
+                ></v-text-field>
+              </ValidationProvider>
+              <div class="d-flex justify-space-around">
+                <v-btn color="warning"  :disabled="invalid" @click.stop=" okDialog.submit = true">更新</v-btn>
+                <v-btn color="primary"  @click.stop=" okDialog.reset = true">还原默认值</v-btn>
+              </div>
+
+            </form>
+          </ValidationObserver>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="okDialog.submit"
+              max-width="250">
+      <v-card rounded>
+        <div class="d-flex justify-space-around ">
+          <v-btn text color="red" dark
+                 @click="okDialog.submit = false"
+          >
+            <v-icon>mdi-close</v-icon>取消
+          </v-btn>
+
+          <v-btn text color="primary" dark
+                 @click="excelOptionsSubmit"
+          >
+            <v-icon>mdi-check</v-icon>确认
+          </v-btn>
+
+        </div>
+
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="okDialog.reset"
+              max-width="250">
+      <v-card rounded >
+          <v-btn icon
+              @click="okDialog.reset = false"
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+
+          <v-btn icon
+              @click="excelOptionsReset"
+          >
+            <v-icon>mdi-check</v-icon>
+          </v-btn>
+      </v-card>
+    </v-dialog>
   </v-app>
 </template>
 
@@ -242,6 +282,9 @@ localize('cn', cn);
 setInteractionMode('eager')
 
 const {ipcRenderer} = require('electron');
+const {app} = require('electron').remote;
+const fs=require('fs');
+const optionFilePath=app.getPath('userData')+'/config.json';
 
 
 // "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"
@@ -356,8 +399,20 @@ export default {
     excelOptionsDialog: {
       show: false,
     },
+    okDialog: {
+      submit:false,
+      reset: false,
+      show: false,
+    },
     // "A", "B", "C", "D", "year", "month", "day", "hour", "wd"
     excelOptions: {
+      year: 4,
+      month: 5,
+      day: 6,
+      hour: 7,
+      wd: 8,
+    },
+    defaultExcelOptions: {
       year: 4,
       month: 5,
       day: 6,
@@ -367,26 +422,16 @@ export default {
   }),
   methods: {
     excelOptionsSubmit() {
-      //有问题 这地方
-      let fs=require('fs');
-
-      // let path=process.cwd()+'/config.json';
-
-      const data = new Uint8Array(Buffer.from('Node.js 中文网'));
-      fs.writeFile('config1.json',data,(err) => {
-        if (err) {
-          console.log(data)
-          window.alert("111111")
-        }
-      })
+      fs.writeFileSync(optionFilePath,JSON.stringify({excelOptions:this.excelOptions}));
+      this.okDialog.submit=false;
+      this.excelOptionsDialog.show=false;
     },
-    // clear() {
-    //   this.$v.$reset()
-    //   this.name = ''
-    //   this.email = ''
-    //   this.select = null
-    //   this.checkbox = false
-    // },
+    excelOptionsReset() {
+      fs.writeFileSync(optionFilePath,JSON.stringify({excelOptions:this.defaultExcelOptions}));
+      this.okDialog.reset=false;
+      this.excelOptionsDialog.show=false;
+    },
+
     //计算雷达图最大值
     handleLegendSelectChanged: function (e) {
       let selected = e.selected;
@@ -467,7 +512,9 @@ export default {
     }
   },
   created() {
-    {
+
+
+    {//雷达图坐标初始化
       let indicatorArray = [];
       for (let wdName of Object.keys(new Wind().windDirectionCount)) {
         let indicatorItem = {};
@@ -476,6 +523,30 @@ export default {
       }
       this.chartsData.radar.indicator = indicatorArray;
     }
+    {//excelOptions初始化
+      // console.log(optionFilePath)
+      if(fs.existsSync(optionFilePath)){
+        let options=fs.readFileSync(optionFilePath,'utf-8');
+        let excelOptions = JSON.parse(options).excelOptions;
+        //判断配置文件中的配置是否符合要求
+        if(excelOptions){
+          let matchFlag=true;
+          for (let prop of Object.keys(this.excelOptions)){
+            if(!Object.prototype.hasOwnProperty.call(excelOptions, prop)) {
+              matchFlag=false;
+              break;
+            }
+          }
+          if(matchFlag){
+            this.excelOptions=excelOptions;
+          }
+        }
+      }
+      // console.log(this.excelOptions)
+
+    }
+
+
 
     ipcRenderer.removeAllListeners("message-from-worker");
     ipcRenderer.on('message-from-worker', (event, arg) => {
