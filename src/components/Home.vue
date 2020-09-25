@@ -151,12 +151,12 @@
     >
       <v-card shaped>
         <v-card-title>
-          Excel选项
+          Excel读取配置
         </v-card-title>
         <v-card-text>
           <ValidationObserver v-slot="{ invalid }">
             <form>
-              <ValidationProvider v-slot="{ errors }" name="风向列号码" rules="required|max_value:100|integer">
+              <ValidationProvider v-slot="{ errors }" name="风向列号码" rules="required|integer|max_value:100">
                 <v-text-field
                     v-model="excelOptions.wd"
                     :error-messages="errors"
@@ -164,7 +164,7 @@
                     required
                 ></v-text-field>
               </ValidationProvider>
-              <ValidationProvider v-slot="{ errors }" name="年列号码" rules="required|max_value:100|integer">
+              <ValidationProvider v-slot="{ errors }" name="年列号码" rules="required|integer|max_value:100">
                 <v-text-field
                     v-model="excelOptions.year"
                     :error-messages="errors"
@@ -172,7 +172,7 @@
                     required
                 ></v-text-field>
               </ValidationProvider>
-              <ValidationProvider v-slot="{ errors }" name="月列号码" rules="required|max_value:100|integer">
+              <ValidationProvider v-slot="{ errors }" name="月列号码" rules="required|integer|max_value:100">
                 <v-text-field
                     v-model="excelOptions.month"
                     :error-messages="errors"
@@ -181,7 +181,7 @@
 
                 ></v-text-field>
               </ValidationProvider>
-              <ValidationProvider v-slot="{ errors }" name="日列号码" rules="required|max_value:100|integer">
+              <ValidationProvider v-slot="{ errors }" name="日列号码" rules="required|integer|max_value:100">
                 <v-text-field
                     v-model="excelOptions.day"
                     :error-messages="errors"
@@ -190,7 +190,7 @@
 
                 ></v-text-field>
               </ValidationProvider>
-              <ValidationProvider v-slot="{ errors }" name="小时列号码" rules="required|max_value:100|integer">
+              <ValidationProvider v-slot="{ errors }" name="小时列号码" rules="required|integer|max_value:100">
                 <v-text-field
                     v-model="excelOptions.hour"
                     :error-messages="errors"
@@ -233,18 +233,22 @@
 
     <v-dialog v-model="okDialog.reset"
               max-width="250">
-      <v-card rounded >
-          <v-btn icon
-              @click="okDialog.reset = false"
+      <v-card rounded>
+        <div class="d-flex justify-space-around ">
+          <v-btn text color="red" dark
+                 @click="okDialog.reset = false"
           >
-            <v-icon>mdi-close</v-icon>
+            <v-icon>mdi-close</v-icon>取消
           </v-btn>
 
-          <v-btn icon
-              @click="excelOptionsReset"
+          <v-btn text color="primary" dark
+                 @click="excelOptionsSubmit"
           >
-            <v-icon>mdi-check</v-icon>
+            <v-icon>mdi-check</v-icon>确认
           </v-btn>
+
+        </div>
+
       </v-card>
     </v-dialog>
   </v-app>
@@ -264,7 +268,7 @@ import Wind from "@/libs/wind";
 
 import cn from 'vee-validate/dist/locale/zh_CN.json';
 import {ValidationObserver, ValidationProvider, setInteractionMode, localize, extend} from 'vee-validate'
-// eslint-disable-next-line no-unused-vars
+
 import {required, max_value, integer} from 'vee-validate/dist/rules';
 
 

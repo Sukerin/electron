@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow,Session,ipcMain,Menu } from 'electron'
+import { app, protocol, BrowserWindow,ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import createWorkerWindow from "./windows/workerWindow";
 // import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
